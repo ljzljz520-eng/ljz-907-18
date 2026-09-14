@@ -1,12 +1,27 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import axios from 'axios';
 import Navbar from './components/Navbar.vue';
 import MovieCard from './components/MovieCard.vue';
 import Pagination from './components/Pagination.vue';
 import UploadModal from './components/UploadModal.vue';
 import MovieDetailModal from './components/MovieDetailModal.vue';
+import AdminPanel from './components/AdminPanel.vue';
 import { Loader2, Film, Search } from 'lucide-vue-next';
+
+// 简单的 hash 路由：#/admin 为反馈审核后台
+const route = ref(window.location.hash.replace(/^#/, '') || '/');
+const onHashChange = () => {
+  route.value = window.location.hash.replace(/^#/, '') || '/';
+};
+window.addEventListener('hashchange', onHashChange);
+onUnmounted(() => window.removeEventListener('hashchange', onHashChange));
+
+const isAdmin = computed(() => route.value === '/admin');
+
+const goHome = () => {
+  window.location.hash = '';
+};
 
 const movies = ref([]);
 const currentPage = ref(1);
@@ -65,7 +80,11 @@ const openDetail = (movie) => {
 </script>
 
 <template>
-  <div class="min-h-screen pb-20 bg-dark-900">
+  <!-- 反馈审核后台 -->
+  <AdminPanel v-if="isAdmin" @back-home="goHome" />
+
+  <!-- 前台 -->
+  <div v-else class="min-h-screen pb-20 bg-dark-900">
     <Navbar @open-upload="isUploadOpen = true" />
 
     <main class="container mx-auto px-4 py-8 sm:px-6 lg:px-8">

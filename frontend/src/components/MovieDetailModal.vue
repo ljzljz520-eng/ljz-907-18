@@ -1,6 +1,7 @@
 <script setup>
 import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue';
 import { X, Star, Calendar, User, Tag, Globe, MessageSquare, Clock, Edit3, Award, Image as ImageIcon, ExternalLink } from 'lucide-vue-next';
+import ReviewSection from './ReviewSection.vue';
 
 const props = defineProps({
   movie: Object,
@@ -49,7 +50,7 @@ defineEmits(['close']);
               <div class="relative flex flex-col lg:flex-row">
                 
                 <!-- Left Column: Poster -->
-                <div class="w-full lg:w-[350px] shrink-0 p-6 md:p-10 lg:pr-0">
+                <div class="w-full lg:w-[350px] shrink-0 self-start p-6 md:p-10 lg:pr-0">
                   <div class="relative aspect-[2/3] w-full overflow-hidden rounded-2xl shadow-2xl ring-1 ring-white/10">
                     <img 
                       v-if="movie?.poster_url"
@@ -164,6 +165,9 @@ defineEmits(['close']);
                       {{ movie.awards }}
                     </p>
                   </div>
+
+                  <!-- 观众反馈（留言 + 评分） -->
+                  <ReviewSection v-if="movie?.id" :movie-id="movie.id" />
 
                 </div>
               </div>
