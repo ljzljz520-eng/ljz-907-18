@@ -59,6 +59,22 @@ echo "Database configuration updated in .env"
 echo "Verifying .env database config:"
 grep "^DB_" .env | head -6 || echo "Warning: Could not verify DB config in .env"
 
+# Ensure an admin token exists — there is intentionally NO public default.
+# Priority: ADMIN_TOKEN env var > existing .env entry > generate a random one.
+if [ -z "$ADMIN_TOKEN" ] && ! grep -q '^ADMIN_TOKEN=' .env 2>/dev/null; then
+  GENERATED_TOKEN=$(php -r "echo bin2hex(random_bytes(24));")
+  echo "ADMIN_TOKEN=$GENERATED_TOKEN" >> .env
+  echo "================================================================"
+  echo "  ADMIN_TOKEN was not set. A random admin token was generated"
+  echo "  and stored in backend/.env :"
+  echo ""
+  echo "      $GENERATED_TOKEN"
+  echo ""
+  echo "  Use it to sign in at the admin panel. To use your own token,"
+  echo "  set ADMIN_TOKEN in backend/.env or as an environment variable."
+  echo "================================================================"
+fi
+
 # Clear config cache immediately after .env update to ensure fresh config
 echo "Clearing old configuration cache..."
 php artisan config:clear 2>/dev/null || true

@@ -93,12 +93,17 @@ ready to handle connections
 ### 审核后台
 
 - 入口：前台导航栏「反馈审核」按钮，或直接访问 `http://localhost:3000/#/admin`
-- 默认管理员口令：`123456`
-- 可通过后端环境变量 `ADMIN_TOKEN` 修改口令：
+- 系统**不提供默认管理员口令**。请通过后端环境变量 `ADMIN_TOKEN` 设置口令：
 
 ```bash
 # docker-compose.yml 的 backend 服务中添加，或在 backend/.env 中配置
 ADMIN_TOKEN=你的安全口令
+```
+
+- 若未配置 `ADMIN_TOKEN`，后端容器首次启动时会自动生成一个随机口令并打印到启动日志中（同时写入 `backend/.env` 持久保存），可通过以下命令查看：
+
+```bash
+docker compose logs backend | grep -A 8 "ADMIN_TOKEN was not set"
 ```
 
 ### 相关 API

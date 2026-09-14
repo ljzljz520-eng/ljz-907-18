@@ -253,7 +253,7 @@ onMounted(() => {
             登录
           </button>
           <p class="mt-4 text-center text-xs text-gray-600">
-            默认口令：123456（可通过后端环境变量 ADMIN_TOKEN 修改）
+            口令由站点管理员通过后端环境变量 ADMIN_TOKEN 配置
           </p>
         </div>
       </div>

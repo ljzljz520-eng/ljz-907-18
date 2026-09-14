@@ -100,13 +100,20 @@ class ReviewController extends Controller
             'token' => 'required|string',
         ]);
 
-        if (!hash_equals((string) config('admin.token', ''), (string) $credentials['token'])) {
+        $configured = (string) config('admin.token', '');
+
+        // 未配置管理员口令时禁止登录（不再提供可猜测的默认口令）
+        if ($configured === '') {
+            return response()->json(['error' => '后台未配置管理员口令，请联系站点管理员设置 ADMIN_TOKEN'], 503);
+        }
+
+        if (!hash_equals($configured, (string) $credentials['token'])) {
             return response()->json(['error' => '管理员口令不正确'], 401);
         }
 
         return response()->json([
             'message' => '登录成功',
-            'token' => (string) config('admin.token'),
+            'token' => $configured,
         ]);
     }
 

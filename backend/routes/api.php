@@ -36,8 +36,9 @@ Route::get('/movies/{movieId}/reviews', [ReviewController::class, 'index']);
 Route::post('/movies/{movieId}/reviews', [ReviewController::class, 'store'])
     ->middleware('throttle:10,1');
 
-// 后台：管理员登录
-Route::post('/admin/login', [ReviewController::class, 'login']);
+// 后台：管理员登录（限频防爆破）
+Route::post('/admin/login', [ReviewController::class, 'login'])
+    ->middleware('throttle:5,1');
 
 // 后台：反馈审核、隐藏、回复、删除（令牌鉴权）
 Route::middleware('admin')->prefix('admin/reviews')->group(function () {
